@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>正在開啟 WKCHOIR App...</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; text-align: center; padding-top: 50px; color: #333; background-color: #f8fafc; }
+        .loader { border: 4px solid #e2e8f0; border-top: 4px solid #007AFF; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 20px auto; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .btn { display: inline-block; background-color: #007AFF; color: white; padding: 14px 28px; text-decoration: none; border-radius: 8px; margin-top: 20px; font-weight: bold; font-size: 16px; }
+    </style>
+</head>
+<body>
+    <div class="loader"></div>
+    <h3 style="color: #1e293b;">驗證中...</h3>
+    <p style="color: #64748b;">正在為您打開 WKCHOIR App</p>
+    
+    <!-- 備用按鈕：如果 Gmail 阻擋咗自動跳轉，用戶可以自己撳 -->
+    <div id="fallback" style="display: none; margin-top: 40px;">
+        <p style="color: #ef4444; font-size: 14px; margin-bottom: 10px;">如果 App 沒有自動開啟，請點擊下方按鈕：</p>
+        <a id="app-btn" href="#" class="btn">手動開啟 App</a>
+    </div>
+
+    <script>
+        // 1. 喺網址參數拎返個 code 出嚟
+        const urlParams = new URLSearchParams(window.location.search);
+        const code = urlParams.get('code');
+        
+        if (code) {
+            // 2. 砌返你專屬嘅 Custom Scheme Link 出嚟
+            const appLink = "wkchoirappotp://verify?code=" + code;
+            
+            // 3. 設定備用按鈕嘅連結
+            document.getElementById('app-btn').href = appLink;
+            
+            // 4. 嘗試自動跳轉！
+            window.location.href = appLink;
+            
+            // 5. 如果 2.5 秒後都仲喺呢個網頁，代表自動跳轉失敗，就顯示個備用掣出嚟
+            setTimeout(function() {
+                document.getElementById('fallback').style.display = 'block';
+                document.querySelector('.loader').style.display = 'none';
+            }, 2500);
+        } else {
+            document.body.innerHTML = "<h3 style='margin-top:50px; color:#ef4444;'>錯誤：找不到驗證碼參數</h3><p>請重新由 Email 點擊連結。</p>";
+        }
+    </script>
+</body>
+</html>
